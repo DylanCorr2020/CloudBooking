@@ -1,10 +1,33 @@
 from flask import Flask , render_template , request  , redirect , url_for , Response
+import mysql.connector
 import json
+from flask import jsonify
 
-
+#connection varibale to database
+con = mysql.connector.connect(
+    host = 'localhost',
+    username = 'root',
+    password = '',
+    database = "Bookings"
+)
 
 # create an instance of flask
 app = Flask(__name__)  
+
+
+#fetch tables
+
+@app.route("/getTable", methods=['GET'])
+def get_tables():
+    cursor = con.cursor()
+    cursor.execute("SHOW TABLES;")
+    tables = cursor.fetchall()
+    cursor.close()
+    table_names = [table[0] for table in tables]
+    return jsonify({"tables":table_names}),200
+    
+    
+
 
 # sample date will be replaced with a real database !
 reservations = [
