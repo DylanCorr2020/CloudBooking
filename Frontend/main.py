@@ -14,19 +14,7 @@ db = mysql.connector.connect(
 # create an instance of flask
 app = Flask(__name__)  
 
-
-#fetch tables
-
-@app.route("/getTable", methods=['GET'])
-def get_tables():
-    cursor = db.cursor()
-    cursor.execute("SHOW TABLES;")
-    tables = cursor.fetchall()
-    cursor.close()
-    table_names = [table[0] for table in tables]
-    return jsonify({"tables":table_names}),200
-
-
+#Create Booking
 @app.route("/addBooking", methods=["POST" , "GET"])
 def add_booking():
     if request.method == "POST":
@@ -46,6 +34,16 @@ def add_booking():
     cursor.execute(sql_query,(fname, lname))
     db.commit()
     return jsonify({"message":"posted"}),200
+
+#Display Bookings 
+@app.route("/getBookings" , methods=["GET"])
+def get_bookings():
+    cursor = db.cursor()
+    sql_query = "SELECT * from reservations;"
+    cursor.execute(sql_query)
+    results = cursor.fetchall()
+    
+    return render_template("view.html",results = results)
     
 
 
@@ -53,7 +51,6 @@ def add_booking():
 @app.route("/")
 def home():
     return render_template('home.html')
-
 
 
 if __name__ == "__main__":
