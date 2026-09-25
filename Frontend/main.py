@@ -27,54 +27,32 @@ def get_tables():
     return jsonify({"tables":table_names}),200
 
 
-@app.route("/addBooking", methods=["POST"])
-def add_booling():
-    data = request.json()
-    fname = data.get('firstname')
-    lname = data.get('lastname')
+@app.route("/addBooking", methods=["POST" , "GET"])
+def add_booking():
+    if request.method == "POST":
+        fname = request.form.get("fname")
+        lname = request.form.get("lname")
+    else:
+        return render_template("create.html")
+    
+    print("fname:", fname)
+    print("lname:", lname)
+    
+    print(request.form)
     
     cursor = db.cursor()
-    sql_query = "INSERT INTO reservations (firtname,lastnam ) VALUES (s%,s%);"
-    cursor.execute(sql_query,(fname,lname))
+    sql_query = "INSERT INTO reservations (firstname,lastname) VALUES (%s,%s)"
     
+    cursor.execute(sql_query,(fname, lname))
+    db.commit()
+    return jsonify({"message":"posted"}),200
     
-    
-
-
-# sample date will be replaced with a real database !
-reservations = [
-    { "res_id": 101, "firstname": "John", "lastname": "Smith" },
-    { "res_id": 102, "firstname": "Jane", "lastname": "Doe" },
-    { "res_id": 103, "firstname": "Michael","lastname": "Brown"}
-]
 
 
 #route to home page and display home.html
 @app.route("/")
 def home():
     return render_template('home.html')
-
-#route to create page
-#use methods POST and GET
-@app.route("/create", methods = ["POST", "GET"])
-def create():
-    if request.method == "POST":
-        
-        new_reservation = {'id':len(reservations)+1,'firstname': request.form.get("fname"),'lastname':request.form.get("lname")}
-        reservations.append(new_reservation)
-        return render_template("view.html")
-        
-    else:
-        return render_template("create.html")
-   
-#@app.route("/view/<firstname>")
-#def view(firstname):
-    #return f"<h1>{firstname}</h1>"
-
-@app.route("/view", methods = ["GET"])
-def view():
- return reservations
-
 
 
 
