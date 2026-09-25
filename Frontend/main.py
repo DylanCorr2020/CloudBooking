@@ -4,7 +4,7 @@ import json
 from flask import jsonify
 
 #connection varibale to database
-con = mysql.connector.connect(
+db = mysql.connector.connect(
     host = 'localhost',
     username = 'root',
     password = '',
@@ -19,12 +19,24 @@ app = Flask(__name__)
 
 @app.route("/getTable", methods=['GET'])
 def get_tables():
-    cursor = con.cursor()
+    cursor = db.cursor()
     cursor.execute("SHOW TABLES;")
     tables = cursor.fetchall()
     cursor.close()
     table_names = [table[0] for table in tables]
     return jsonify({"tables":table_names}),200
+
+
+@app.route("/addBooking", methods=["POST"])
+def add_booling():
+    data = request.json()
+    fname = data.get('firstname')
+    lname = data.get('lastname')
+    
+    cursor = db.cursor()
+    sql_query = "INSERT INTO reservations (firtname,lastnam ) VALUES (s%,s%);"
+    cursor.execute(sql_query,(fname,lname))
+    
     
     
 
