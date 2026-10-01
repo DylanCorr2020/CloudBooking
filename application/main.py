@@ -5,9 +5,10 @@ from flask import jsonify
 
 #connection varibale to database
 db = mysql.connector.connect(
-    host = 'localhost',
+    host = 'host.docker.internal',
     username = 'root',
     password = '',
+    port=3306,
     database = "Bookings"
 )
 
@@ -54,6 +55,6 @@ def home():
 
 
 if __name__ == "__main__":
-   app.run(debug=True)
+   app.run(debug=True, host = '0.0.0.0')
    
 
