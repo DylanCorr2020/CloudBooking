@@ -5,9 +5,9 @@ from flask import jsonify
 
 #connection varibale to database
 db = mysql.connector.connect(
-    host = 'host.docker.internal',
+    host = 'arn:aws:rds:eu-west-1:300532821700:db:terraform-75c4a2634ff4e5b342c69e0289',
     username = 'root',
-    password = '',
+    password = 'admin1234!',
     port=3306,
     database = "Bookings"
 )

@@ -2,7 +2,8 @@
 
 #main VPC
 resource "aws_vpc" "main" {
-  cidr_block       = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/16"
+
 
   tags = {
     name = "Main VPC"
@@ -11,10 +12,10 @@ resource "aws_vpc" "main" {
 }
 
 #Public Subnet where is EC2 will be running 
-resource "aws_subnet" "public-subnet" {
-  vpc_id     = aws_vpc.main.id
+resource "aws_subnet" "public-subnet-1a" {
+  vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = true
-  cidr_block = "10.0.1.0/24"
+  cidr_block              = "10.0.1.0/24"
 
   tags = {
     name = "Public Subnet"
@@ -22,9 +23,19 @@ resource "aws_subnet" "public-subnet" {
 }
 
 #Private Subnet where RDS intsance will be running 
-resource "aws_subnet" "private-subnet" {
+resource "aws_subnet" "private-subnet-1a" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.2.0/24"
+
+  tags = {
+    name = "Private Subnet"
+  }
+}
+
+#Private Subnet where RDS intsance will be running 
+resource "aws_subnet" "private-subnet-1b" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.3.0/24"
 
   tags = {
     name = "Private Subnet"
@@ -35,30 +46,30 @@ resource "aws_subnet" "private-subnet" {
 #Internet Gateway 
 
 resource "aws_internet_gateway" "igw" {
-   
-   vpc_id = aws_vpc.main.id
 
-   tags = {
-      name = "Internet Gateway"
-   }
-   
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    name = "Internet Gateway"
+  }
+
 }
 
 
 # created route table for internet gateway to connect public subnet
 resource "aws_route_table" "route-table-igw" {
-    
-    vpc_id = aws_vpc.main.id
-    
+
+  vpc_id = aws_vpc.main.id
+
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-  
+
 }
 
 
 resource "aws_route_table_association" "route-table-association-igw" {
-  subnet_id      = aws_subnet.public-subnet.id
+  subnet_id      = aws_subnet.public-subnet-1a.id
   route_table_id = aws_route_table.route-table-igw.id
 }
